@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - MyMall{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+    <h1>Checkout</h1>
+    
+    <div class="checkout-container">
+        <div class="checkout-form-section">
+            <h2>Shipping Information</h2>
+            <form method="POST" action="{{ url_for('checkout') }}" class="checkout-form">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Shipping Address *</label>
+                    <textarea id="address" name="address" rows="4" required class="form-input"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-large">Place Order</button>
+            </form>
+        </div>
+        
+        <div class="checkout-summary">
+            <h2>Order Summary</h2>
+            <div class="order-items">
+                {% for item in cart_items %}
+                <div class="order-item">
+                    <span class="item-name">{{ item.product.name }} × {{ item.quantity }}</span>
+                    <span class="item-price">${{ "%.2f"|format(item.subtotal) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="order-totals">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span>${{ "%.2f"|format(total) }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Tax (10%):</span>
+                    <span>${{ "%.2f"|format(total * 0.1) }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Shipping:</span>
+                    <span>FREE</span>
+                </div>
+                <div class="total-row final-total">
+                    <span>Total:</span>
+                    <span>${{ "%.2f"|format(total * 1.1) }}</span>
+                </div>
+            </div>
+            
+            <a href="{{ url_for('view_cart') }}" class="btn btn-secondary">← Back to Cart</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

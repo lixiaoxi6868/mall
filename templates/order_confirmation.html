@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Order Confirmation - MyMall{% endblock %}
+
+{% block content %}
+<div class="confirmation-page">
+    <div class="success-icon">✓</div>
+    <h1>Order Placed Successfully!</h1>
+    <p class="confirmation-message">Thank you for your purchase. Your order has been confirmed.</p>
+    
+    <div class="order-details">
+        <h2>Order Details</h2>
+        <div class="detail-row">
+            <span class="detail-label">Order Number:</span>
+            <span class="detail-value">#{{ order.id }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Order Date:</span>
+            <span class="detail-value">{{ order.order_date }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Customer Name:</span>
+            <span class="detail-value">{{ order.customer_name }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Email:</span>
+            <span class="detail-value">{{ order.customer_email }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Shipping Address:</span>
+            <span class="detail-value">{{ order.customer_address }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value status-{{ order.status }}">{{ order.status|capitalize }}</span>
+        </div>
+    </div>
+    
+    <div class="order-items-summary">
+        <h2>Items Ordered</h2>
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td>{{ item.product_name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ "%.2f"|format(item.price) }}</td>
+                    <td>${{ "%.2f"|format(item.price * item.quantity) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="3"><strong>Total (including 10% tax):</strong></td>
+                    <td><strong>${{ "%.2f"|format(order.total_amount * 1.1) }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <div class="confirmation-actions">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - MyMall{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <a href="{{ url_for('index') }}" class="back-link">← Back to Products</a>
+    
+    <div class="detail-container">
+        <div class="detail-image">
+            <div class="large-emoji">{{ product.image_url }}</div>
+        </div>
+        
+        <div class="detail-info">
+            <h1>{{ product.name }}</h1>
+            <p class="detail-category">Category: {{ product.category }}</p>
+            <p class="detail-description">{{ product.description }}</p>
+            
+            <div class="detail-meta">
+                <div class="price-box">
+                    <span class="price-label">Price:</span>
+                    <span class="price-value">${{ "%.2f"|format(product.price) }}</span>
+                </div>
+                <div class="stock-box">
+                    <span class="stock-label">Availability:</span>
+                    <span class="stock-value {% if product.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+                        {% if product.stock > 0 %}
+                            {{ product.stock }} in stock
+                        {% else %}
+                            Out of stock
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            
+            <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="add-to-cart-form">
+                <div class="quantity-selector">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" 
+                           {% if product.stock == 0 %}disabled{% endif %}>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large" {% if product.stock == 0 %}disabled{% endif %}>
+                    {% if product.stock > 0 %}
+                        Add to Cart
+                    {% else %}
+                        Out of Stock
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

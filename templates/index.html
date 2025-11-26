@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Home - MyMall{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to MyMall</h1>
+    <p>Discover amazing products at great prices</p>
+</div>
+
+<div class="filters">
+    <form method="GET" action="{{ url_for('index') }}" class="filter-form">
+        <input type="text" name="search" placeholder="Search products..." value="{{ search_query }}" class="search-input">
+        <select name="category" class="category-select" onchange="this.form.submit()">
+            <option value="all" {% if current_category == 'all' %}selected{% endif %}>All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category }}" {% if current_category == category %}selected{% endif %}>
+                    {{ category }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Search</button>
+        {% if current_category != 'all' or search_query %}
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Clear Filters</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="products-grid">
+    {% if products %}
+        {% for product in products %}
+        <div class="product-card">
+            <div class="product-image">{{ product.image_url }}</div>
+            <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <p class="product-category">{{ product.category }}</p>
+                <p class="product-description">{{ product.description }}</p>
+                <div class="product-footer">
+                    <span class="product-price">${{ "%.2f"|format(product.price) }}</span>
+                    <span class="product-stock">Stock: {{ product.stock }}</span>
+                </div>
+                <div class="product-actions">
+                    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-secondary btn-small">View Details</a>
+                    <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" style="display: inline;">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-primary btn-small" {% if product.stock == 0 %}disabled{% endif %}>
+                            Add to Cart
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <h2>No products found</h2>
+            <p>Try adjusting your search or filters</p>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">View All Products</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
